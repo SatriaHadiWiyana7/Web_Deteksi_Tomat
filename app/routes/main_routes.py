@@ -27,24 +27,21 @@ main_bp = Blueprint('main', __name__)
 @main_bp.route('/')
 def index():
     """
-    Menampilkan halaman utama (index).
-    Memeriksa status login untuk menampilkan gambar profil di navbar.
+    Menampilkan halaman utama.
     """
     profile_pic_url = None
-    # Menggunakan url_for untuk default avatar agar konsisten
     default_avatar = url_for('static', filename='assets/default-avatar.png')
     
     if session.get('logged_in'):
         user_id = session.get('user_id')
         user = query_db("SELECT profile_picture_path FROM users WHERE id = %s", (user_id,), one=True)
         if user and user.get('profile_picture_path'):
-            # Membuat URL yang valid untuk file gambar profil
             profile_pic_url = url_for('main.serve_upload', filepath_in_uploads_dir=user['profile_picture_path'].replace('\\', '/'))
 
+    # PASTIKAN BARIS DI BAWAH INI MENGGUNAKAN 'public/index.html'
     return render_template('public/index.html', 
         logged_in=session.get('logged_in', False), 
         user_name=session.get('user_name', ''),
-        # Memastikan selalu ada URL gambar yang valid untuk ditampilkan
         profile_picture_url=profile_pic_url or default_avatar
     )
 

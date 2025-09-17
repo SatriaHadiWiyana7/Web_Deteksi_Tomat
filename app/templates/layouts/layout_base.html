@@ -1,18 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}FusaCheck{% endblock %}</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='assets/favicon.ico') }}" type="image/x-icon">
+    
+    {# Placeholder untuk diisi oleh layout_main.html #}
     {% block head_extra %}{% endblock %}
 </head>
 <body {% block body_attributes %}{% endblock %}>
 
-    {% block content %}
-    {% endblock %}
+    {# Placeholder untuk semua konten visual #}
+    {% block content %}{% endblock %}
 
+    {# Placeholder untuk file JavaScript #}
     {% block scripts %}{% endblock %}
 </body>
 </html>

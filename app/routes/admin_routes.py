@@ -210,3 +210,65 @@ def delete_admin_user(user_id):
     success = execute_db("DELETE FROM users WHERE id = %s", (user_id,))
     
     return jsonify({"message": "Pengguna dan semua data terkait berhasil dihapus"}) if success else jsonify({"error": "Gagal menghapus pengguna"}), (200 if success else 500)
+
+@admin_bp.route('/logs/delete_all', methods=['DELETE'])
+@admin_required
+def delete_all_admin_logs():
+    """
+    Endpoint API untuk menghapus SEMUA log deteksi dan gambar mentah terkait.
+    """
+    conn = None
+    cursor = None
+    try:
+        conn = get_db_connection()
+        if conn is None:
+            return jsonify({"error": "Koneksi database gagal"}), 500
+        cursor = conn.cursor(dictionary=True)
+
+        # Langkah 1: Kumpulkan semua path gambar yang akan dihapus SEBELUM menghapus record DB
+        cursor.execute("SELECT image_path FROM fusarium_new_raw_images WHERE image_path IS NOT NULL")
+        image_paths_to_delete = [row['image_path'] for row in cursor.fetchall()]
+
+        # Langkah 2: Lakukan penghapusan database dalam satu transaksi
+        conn.start_transaction()
+        cursor.execute("DELETE FROM fusarium_new_detections")
+        detections_deleted_count = cursor.rowcount
+        
+        cursor.execute("DELETE FROM fusarium_new_raw_images")
+        raw_images_deleted_count = cursor.rowcount
+        conn.commit()
+
+        # Langkah 3: Hapus file fisik dari server
+        deleted_files_count = 0
+        failed_to_delete_files = []
+        for rel_path in image_paths_to_delete:
+            full_path = os.path.join(current_app.root_path, '..', current_app.config['UPLOAD_FOLDER_BASE'], rel_path.replace('\\', '/'))
+            if os.path.exists(full_path):
+                try:
+                    os.remove(full_path)
+                    deleted_files_count += 1
+                except OSError as e:
+                    print(f"Gagal menghapus file {full_path}: {e}")
+                    failed_to_delete_files.append(os.path.basename(full_path))
+        
+        # Buat pesan respons yang informatif
+        message = (
+            f"Operasi selesai. {detections_deleted_count} log deteksi dan "
+            f"{raw_images_deleted_count} data gambar dihapus dari database. "
+            f"{deleted_files_count} file gambar berhasil dihapus dari server."
+        )
+        if failed_to_delete_files:
+            message += f" Gagal menghapus beberapa file: {', '.join(failed_to_delete_files)}."
+            
+        return jsonify({"message": message}), 200
+
+    except Exception as e:
+        if conn:
+            conn.rollback()
+        print(f"Error saat menghapus semua log: {e}")
+        return jsonify({"error": f"Terjadi kesalahan tak terduga: {e}"}), 500
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()

@@ -1,13 +1,24 @@
 {% extends 'layouts/layout_base.html' %}
 
-{% block body_attributes %}data-logged-in="{{ logged_in | tojson }}" data-username="{{ user_name | e }}"{% endblock %}
+{% block head_extra %}
+    {# INILAH "GANTUNGAN" YANG MEMUAT CSS UNTUK HALAMAN UTAMA #}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+{% endblock %}
+
+{% block body_attributes %}
+    data-logged-in="{{ session.get('logged_in', false) | tojson }}" 
+    data-username="{{ session.get('user_name', '') | e }}"
+{% endblock %}
 
 {% block content %}
+    {# Ini adalah bagian atas bingkai (Navbar) #}
     {% include 'partials/_navbar.html' %}
 
     <div class="main-content">
+        {# Di sinilah "foto" (public/index.html) akan diletakkan #}
         {% block main_content %}{% endblock %}
     </div>
 
+    {# Ini adalah bagian bawah bingkai (Footer) #}
     {% include 'partials/_footer.html' %}
 {% endblock %}

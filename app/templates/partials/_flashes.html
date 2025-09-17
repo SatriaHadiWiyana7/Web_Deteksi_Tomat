@@ -1,0 +1,13 @@
+{# templates/partials/_flashes.html #}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-messages-container">
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category or 'info' }}" role="alert">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}

@@ -1,0 +1,26 @@
+{% extends 'layouts/layout_base.html' %}
+
+{% block title %}{% block auth_title %}{% endblock %} - FusaCheck{% endblock %}
+
+{% block head_extra %}
+    {# Menghubungkan ke file CSS khusus untuk form autentikasi #}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="logo-wrapper">
+            <a href="{{ url_for('main.index') }}">
+                <img src="{{ url_for('static', filename='assets/Group 3736.png') }}" alt="FusaCheck Logo" class="form-logo">
+            </a>
+        </div>
+        
+        {# Menyertakan komponen untuk menampilkan notifikasi/error #}
+        {% include 'partials/_flashes.html' %}
+
+        {# Konten spesifik dari form (misal: login.html) akan masuk di sini #}
+        {% block auth_content %}{% endblock %}
+    </div>
+</div>
+{% endblock %}

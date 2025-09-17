@@ -1,0 +1,22 @@
+{% extends 'layouts/layout_base.html' %}
+
+{% block title %}{% block admin_title %}{% endblock %} - Admin FusaCheck{% endblock %}
+
+{% block head_extra %}
+    {# Menghubungkan ke font dan file CSS khusus admin #}
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div class="admin-wrapper">
+        {# Menyertakan komponen sidebar admin #}
+        {% include 'partials/_admin_sidebar.html' %}
+        
+        <main class="content">
+            {# Konten spesifik dari halaman admin #}
+            {% block admin_content %}{% endblock %}
+        </main>
+    </div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'layouts/layout_main.html' %}
+
+{% block title %}Edit Profil{% endblock %}
+
+{% block main_content %}
+<div class="container profile-container">
+    <h2>Edit Profil</h2>
+
+    {# Di sinilah kita memasukkan komponen notifikasi #}
+    {% include 'partials/_flashes.html' %}
+
+    <form action="{{ url_for('profile.update_profile') }}" method="post" enctype="multipart/form-data" id="profile-form">
+        
+        <div class="profile-picture-section">
+            <img id="profile-pic-preview" src="{{ user.profile_picture_url }}" alt="Foto Profil">
+            <label for="profile-pic-input" class="upload-pic-btn">Ubah Foto</label>
+            <input type="file" id="profile-pic-input" name="profile_picture" accept="image/*" style="display: none;">
+        </div>
+        
+        <div class="form-group">
+            <label for="profile-name-input">Nama Tampilan</label>
+            <input type="text" id="profile-name-input" name="display_name" value="{{ user.display_name or '' }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="profile-email-input">Email</label>
+            <input type="email" id="profile-email-input" name="email" value="{{ user.email or '' }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="profile-phone-input">Nomor Telepon</label>
+            <input type="tel" id="profile-phone-input" name="phone_number" value="{{ user.phone_number or '' }}" required>
+        </div>
+        
+        <button type="submit" class="btn-primary save-profile-btn">Simpan Perubahan</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+    {# Memuat JavaScript khusus untuk halaman profil (preview gambar) #}
+    <script src="{{ url_for('static', filename='js/profile.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'layouts/layout_auth.html' %}
+
+{% block auth_title %}Register Akun{% endblock %}
+
+{% block auth_content %}
+    <form id="register-form" action="{{ url_for('auth.register') }}" method="POST">
+        <div class="form-group">
+            <label for="username">Nama Lengkap</label>
+            <input type="text" id="username" name="username" placeholder="Masukkan nama lengkap" required>
+            <div class="error-message" id="username-error"></div>
+        </div>
+        <div class="form-group">
+            <label for="phone">No. Telepon</label>
+            <input type="tel" id="phone" name="phone" placeholder="Contoh: 08123456789" required>
+            <div class="error-message" id="phone-error"></div>
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="contoh@email.com" required>
+            <div class="error-message" id="email-error"></div>
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Minimal 8 karakter kombinasi" required>
+            <div class="password-strength-meter">
+                <div id="password-strength-bar" class="strength-bar"></div>
+            </div>
+            <div id="password-strength-text" class="strength-text"></div>
+        </div>
+        <div class="form-group">
+            <label for="confirm-password">Konfirmasi Password</label>
+            <input type="password" id="confirm-password" name="confirm_password" placeholder="Ulangi password" required>
+            <div class="error-message" id="confirm-password-error"></div>
+        </div>
+        <button type="submit" class="btn-primary">Daftar</button>
+    </form>
+    <div class="auth-link">
+        <p>Sudah punya akun? <a href="{{ url_for('auth.login') }}">Login di sini</a></p>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/auth_validation.js') }}"></script>
+{% endblock %}

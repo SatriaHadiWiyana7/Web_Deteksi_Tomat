@@ -1,0 +1,129 @@
+{% extends 'layouts/layout_main.html' %}
+
+{% block title %}Deteksi Penyakit Fusarium{% endblock %}
+
+{% block main_content %}
+    
+<div id="home-screen" class="screen active">
+    <!-- Card Deteksi Otomatis -->
+    <div class="detection-card">
+        <div class="container">
+            <h1>Deteksi Otomatis <br> Penyakit Layu Fusarium</h1>
+            <p>Unggah gambar daun tomat untuk mendeteksi penyakit layu fusarium secara cepat dan akurat.</p>
+            <div class="drop-area">
+                <img src="{{ url_for('static', filename='assets/upload-minimalistic-svgrepo-com.svg') }}" alt="Unggah Gambar" class="drop-icon">
+                <button class="upload-btn">Pilih Gambar</button>
+                <p class="drop-text">atau seret dan lepas gambar di sini</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Card About Us - Terpisah -->
+    <div class="fusacheck-section" id="about-us-section">
+        <div class="fusacheck-content">
+            <div class="fusacheck-logo-text">
+                <img src="{{ url_for('static', filename='assets/Group 3736.png') }}" alt="Logo FusaCheck" class="fusacheck-logo">
+            </div>
+            <div class="fusacheck-description">
+                <p><strong>FusaCheck</strong> adalah solusi inovatif untuk deteksi dini layu fusarium pada tanaman tomat. Layu fusarium, yang disebabkan oleh jamur <i>Fusarium oxysporum f.sp. lycopersici</i>, adalah penyakit serius yang menyerang tanaman, menyebabkan kelayuan dan kematian. Kami hadir untuk membantu petani mengidentifikasi ancaman ini lebih awal.</p>
+                <p>Dengan FusaCheck, Anda bisa melakukan pencegahan dan penanganan tepat waktu. Ini akan melindungi tanaman dari kerugian besar dan memastikan panen yang sehat dan produktif.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="loading-screen" class="screen">
+    <div class="container loading-container">
+        <h1>Menganalisis Gambar...</h1>
+        <p>Harap tunggu sejenak, sistem sedang memproses gambar Anda.</p>
+        <div class="loading-spinner"></div>
+    </div>
+</div>
+
+<div id="result-screen" class="screen">
+    <div class="container result-container">
+        <h2>Hasil Analisis</h2>
+        <div class="image-preview-wrapper">
+            <img id="result-image" src="" alt="Gambar yang Dianalisis" class="image-preview">
+            <div id="analysis-status" class="analysis-status">
+                <img src="" alt="Ikon Status" class="status-icon">
+                <span id="status-text">Analisis Selesai</span>
+            </div>
+        </div>
+        <div class="analysis-details">
+            <div class="detail-row">
+                <span>Status Kesehatan:</span>
+                <span id="health-status" class="status-value"></span>
+            </div>
+            <div class="detail-row">
+                <span>Tingkat Akurasi:</span>
+                <span id="accuracy-level" class="status-value"></span>
+            </div>
+            <div id="info-message" class="info-message">
+                <img src="{{ url_for('static', filename='assets/info-circle-svgrepo-com.svg') }}" alt="Info" class="info-icon">
+                <span id="info-text"></span>
+            </div>
+            <button class="back-btn">Coba Gambar Lain</button>
+        </div>
+    </div>
+</div>
+
+<div id="detection-history-section" class="screen" style="display: none;">
+    <div class="container">
+        <h2>Riwayat Deteksi Anda</h2>
+        <p>Berikut adalah hasil analisis dari gambar-gambar yang pernah Anda unggah.</p>
+        <table id="detection-history-table" class="history-table">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Tanggal</th>
+                    <th>Hasil</th>
+                    <th>Foto</th>
+                </tr>
+            </thead>
+            <tbody>
+                </tbody>
+        </table>
+    </div>
+</div>
+
+
+<!-- Modal Popup untuk Hasil Deteksi -->
+<div id="detection-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Hasil Deteksi</h2>
+            <span class="close-btn">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="result-image-container">
+                <img id="modal-result-image" src="" alt="Gambar yang dianalisis" class="modal-image">
+            </div>
+            <div class="result-details">
+                <div class="result-status">
+                    <div class="status-icon-container">
+                        <img id="modal-status-icon" src="" alt="Status Icon" class="status-icon-large">
+                    </div>
+                    <div class="status-text-container">
+                        <h3 id="modal-status-text">Analisis Selesai</h3>
+                        <p id="modal-confidence-text">Tingkat Akurasi: 0%</p>
+                    </div>
+                </div>
+                <div class="result-description">
+                    <p id="modal-description-text">Deskripsi hasil deteksi akan muncul di sini.</p>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button id="modal-close-btn" class="btn btn-primary">Tutup</button>
+            <button id="modal-try-again-btn" class="btn btn-outline">Coba Gambar Lain</button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+    {# Memuat JavaScript khusus untuk halaman utama #}
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endblock %}
