@@ -1,43 +1,71 @@
 {% extends 'layouts/layout_main.html' %}
 
-{% block title %}Edit Profil{% endblock %}
+{% block title %}Profil Saya{% endblock %}
 
 {% block main_content %}
-<div class="container profile-container">
-    <h2>Edit Profil</h2>
+<div class="profile-page-container">
+    <div class="profile-header">
+        <h2>Profil Saya</h2>
+        <p>Perbarui foto dan detail pribadi Anda di sini.</p>
+    </div>
 
-    {# Di sinilah kita memasukkan komponen notifikasi #}
     {% include 'partials/_flashes.html' %}
 
-    <form action="{{ url_for('profile.update_profile') }}" method="post" enctype="multipart/form-data" id="profile-form">
-        
-        <div class="profile-picture-section">
+    <form class="profile-form" action="{{ url_for('profile.update_profile') }}" method="post" enctype="multipart/form-data">
+        <div class="profile-picture-column">
             <img id="profile-pic-preview" src="{{ user.profile_picture_url }}" alt="Foto Profil">
-            <label for="profile-pic-input" class="upload-pic-btn">Ubah Foto</label>
+            <label for="profile-pic-input" class="upload-pic-btn">
+                <i class="fas fa-camera"></i> Ubah Foto
+            </label>
             <input type="file" id="profile-pic-input" name="profile_picture" accept="image/*" style="display: none;">
+            <p class="picture-hint">JPG atau PNG, maks 5MB.</p>
         </div>
-        
-        <div class="form-group">
-            <label for="profile-name-input">Nama Tampilan</label>
-            <input type="text" id="profile-name-input" name="display_name" value="{{ user.display_name or '' }}" required>
+
+        <div class="profile-details-column">
+            <h4>Informasi Akun</h4>
+            <div class="form-group readonly">
+                <label>Email</label>
+                <input type="email" value="{{ user.email or '' }}" disabled>
+            </div>
+            <div class="form-group readonly">
+                <label>No. Telepon</label>
+                <input type="tel" value="{{ user.phone_number or '' }}" disabled>
+            </div>
+            
+            <hr>
+            
+            <h4>Informasi Pribadi</h4>
+            <div class="form-group">
+                <label for="display_name">Nama Tampilan</label>
+                <input type="text" id="display_name" name="display_name" value="{{ user.display_name or '' }}" required>
+            </div>
+             <div class="form-group">
+                <label for="date_of_birth">Tanggal Lahir</label>
+                <input type="date" id="date_of_birth" name="date_of_birth" value="{{ user.date_of_birth or '' }}">
+            </div>
+            <div class="form-group">
+                <label for="address">Alamat</label>
+                <textarea id="address" name="address" rows="3">{{ user.address or '' }}</textarea>
+            </div>
+
+            <hr>
+
+            <h4>Ubah Password</h4>
+            <div class="form-group">
+                <label for="password">Password Baru</label>
+                <input type="password" id="password" name="password" placeholder="Kosongkan jika tidak ingin diubah">
+            </div>
+            <div class="form-group">
+                <label for="confirm_password">Konfirmasi Password Baru</label>
+                <input type="password" id="confirm_password" name="confirm_password" placeholder="Ulangi password baru">
+            </div>
+            
+            <button type="submit" class="btn-primary save-profile-btn">Simpan Perubahan</button>
         </div>
-        
-        <div class="form-group">
-            <label for="profile-email-input">Email</label>
-            <input type="email" id="profile-email-input" name="email" value="{{ user.email or '' }}" required>
-        </div>
-        
-        <div class="form-group">
-            <label for="profile-phone-input">Nomor Telepon</label>
-            <input type="tel" id="profile-phone-input" name="phone_number" value="{{ user.phone_number or '' }}" required>
-        </div>
-        
-        <button type="submit" class="btn-primary save-profile-btn">Simpan Perubahan</button>
     </form>
 </div>
 {% endblock %}
 
 {% block scripts %}
-    {# Memuat JavaScript khusus untuk halaman profil (preview gambar) #}
-    <script src="{{ url_for('static', filename='js/profile.js') }}"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script> <script src="{{ url_for('static', filename='js/profile.js') }}"></script>
 {% endblock %}
