@@ -6,15 +6,25 @@
     <title>{% block title %}FusaCheck{% endblock %}</title>
     <link rel="icon" href="{{ url_for('static', filename='assets/favicon.ico') }}" type="image/x-icon">
     
-    {# Placeholder untuk diisi oleh layout_main.html #}
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     {% block head_extra %}{% endblock %}
 </head>
 <body {% block body_attributes %}{% endblock %}>
 
-    {# Placeholder untuk semua konten visual #}
     {% block content %}{% endblock %}
 
-    {# Placeholder untuk file JavaScript #}
     {% block scripts %}{% endblock %}
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <script>
+                const FLASH_MESSAGES = {{ messages|tojson|safe }};
+            </script>
+        {% endif %}
+    {% endwith %}
+
+    <script src="{{ url_for('static', filename='js/notifications.js') }}"></script>
+
 </body>
 </html>
