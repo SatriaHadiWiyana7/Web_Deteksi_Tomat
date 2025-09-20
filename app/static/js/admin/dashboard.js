@@ -2,21 +2,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const tableBody = document.getElementById('logTableBody');
     const alertContainer = document.getElementById('alert-container');
 
-    /**
-     * Menampilkan notifikasi sementara di atas tabel.
-     * @param {string} message - Pesan yang akan ditampilkan.
-     * @param {string} [type='success'] - Tipe notifikasi ('success' atau 'danger').
-     */
-    function showAlert(message, type = 'success') {
-        const alertDiv = document.createElement('div');
-        // Pastikan class alert ada, untuk styling dasar
-        alertDiv.className = `alert alert-${type}`;
-        alertDiv.textContent = message;
-        alertContainer.innerHTML = ''; // Hapus notifikasi lama
-        alertContainer.appendChild(alertDiv);
-        // Hapus notifikasi setelah 5 detik
-        setTimeout(() => { alertContainer.innerHTML = ''; }, 5000);
-    }
 
     /**
      * Mengambil data log dari API backend dan mengisi tabel.
@@ -65,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch (error) {
             console.error('Gagal mengambil logs:', error);
             tableBody.innerHTML = '<tr><td colspan="7" class="no-data">Gagal memuat data. Silakan coba lagi.</td></tr>';
-            showAlert('Gagal memuat data log.', 'danger');
+            showAlert('Gagal memuat data log.', 'error');
         }
     }
 

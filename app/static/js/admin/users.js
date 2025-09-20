@@ -1,3 +1,5 @@
+// static/js/admin/users.js
+
 document.addEventListener('DOMContentLoaded', function() {
     // --- Elemen DOM ---
     const userModal = document.getElementById('userModal');
@@ -5,18 +7,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const userForm = document.getElementById('userForm');
     const modalTitle = document.getElementById('modalTitle');
     const passwordHelpText = document.getElementById('passwordHelpText');
-    const alertContainer = document.getElementById('alert-container');
     const usersTableBody = document.getElementById('usersTableBody');
     const confirmDeleteButton = document.getElementById('confirmDeleteButton');
 
     let userToDeleteId = null;
-
-    // --- Fungsi Bantuan ---
-    function showAlert(message, type = 'success') {
-        alertContainer.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
-        setTimeout(() => { alertContainer.innerHTML = ''; }, 5000);
-    }
     
+    // Fungsi lainnya tetap sama
     window.openUserModal = function(userId = null, name = '', phone = '', email = '') {
         userForm.reset();
         document.getElementById('userId').value = userId || '';
@@ -24,11 +20,11 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('phoneNumber').value = phone;
         document.getElementById('email').value = email;
 
-        if (userId) { // Mode Edit
+        if (userId) {
             modalTitle.textContent = 'Edit Pengguna';
             document.getElementById('password').required = false;
             passwordHelpText.style.display = 'block';
-        } else { // Mode Tambah
+        } else {
             modalTitle.textContent = 'Tambah Pengguna Baru';
             document.getElementById('password').required = true;
             passwordHelpText.style.display = 'none';
@@ -45,7 +41,6 @@ document.addEventListener('DOMContentLoaded', function() {
         deleteConfirmModal.style.display = 'block';
     }
 
-    // --- Logika Inti (Fetch & CRUD) ---
     async function fetchUsers() {
         usersTableBody.innerHTML = '<tr><td colspan="7" class="no-data">Memuat data pengguna...</td></tr>';
         try {
@@ -54,11 +49,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const users = await response.json();
             
             usersTableBody.innerHTML = '';
-            if (users.error) {
-                usersTableBody.innerHTML = `<tr><td colspan="7" class="no-data">${users.error}</td></tr>`; return;
-            }
-            if (users.length === 0) {
-                usersTableBody.innerHTML = '<tr><td colspan="7" class="no-data">Tidak ada pengguna ditemukan.</td></tr>'; return;
+            if (users.error || users.length === 0) {
+                usersTableBody.innerHTML = `<tr><td colspan="7" class="no-data">${users.error || 'Tidak ada pengguna ditemukan.'}</td></tr>`; return;
             }
 
             users.forEach((user, index) => {
@@ -108,11 +100,11 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             const result = await response.json();
             if (!response.ok) throw new Error(result.error || 'Operasi gagal');
-            showAlert(result.message || 'Sukses!');
+            showAlert(result.message, 'success'); // Sekarang akan memanggil pop-up!
             fetchUsers();
             closeUserModal();
         } catch (error) {
-            showAlert(error.message, 'danger');
+            showAlert(error.message, 'error'); // Tipe 'error' untuk SweetAlert2
         }
     });
 
@@ -122,10 +114,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const response = await fetch(`/admin/users/toggle_activation/${userId}`, { method: 'POST' });
             const result = await response.json();
             if (!response.ok) throw new Error(result.error || 'Gagal mengubah status');
-            showAlert(result.message);
+            showAlert(result.message, 'success');
             fetchUsers();
         } catch (error) {
-            showAlert(error.message, 'danger');
+            showAlert(error.message, 'error');
         }
     }
     
@@ -135,16 +127,15 @@ document.addEventListener('DOMContentLoaded', function() {
             const response = await fetch(`/admin/users/delete/${userToDeleteId}`, { method: 'DELETE' });
             const result = await response.json();
             if (!response.ok) throw new Error(result.error || 'Gagal menghapus pengguna');
-            showAlert(result.message);
+            showAlert(result.message, 'success');
             fetchUsers();
         } catch (error) {
-            showAlert(error.message, 'danger');
+            showAlert(error.message, 'error');
         } finally {
             closeDeleteConfirmModal();
             userToDeleteId = null;
         }
     });
 
-    // --- Inisialisasi ---
     fetchUsers();
 });

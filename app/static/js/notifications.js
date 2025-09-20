@@ -1,15 +1,11 @@
 // static/js/notifications.js
 
 /**
- * Fungsi ini mengambil array pesan dan menampilkannya sebagai notifikasi toast.
- * @param {Array<Array<string>>} messages - Array berisi array pesan, contoh: [['success', 'Login berhasil!']]
+ * Fungsi global untuk menampilkan notifikasi pop-up (toast).
+ * @param {string} message - Pesan yang akan ditampilkan.
+ * @param {string} [type='success'] - Tipe notifikasi ('success', 'error', 'warning', 'info').
  */
-function showFlashMessages(messages) {
-
-    if (!messages || messages.length === 0) {
-        return;
-    }
-
+function showAlert(message, type = 'success') {
     const Toast = Swal.mixin({
         toast: true,
         position: 'top-end',
@@ -22,18 +18,25 @@ function showFlashMessages(messages) {
         }
     });
 
-    messages.forEach(msg => {
-        const category = msg[0]; // contoh: 'success'
-        const message = msg[1];  // contoh: 'Login berhasil! ...'
-
-        Toast.fire({
-            icon: category,
-            title: message
-        });
+    Toast.fire({
+        icon: type,
+        title: message
     });
 }
 
-// Cek apakah data notifikasi (FLASH_MESSAGES) sudah disiapkan di HTML
-if (typeof FLASH_MESSAGES !== 'undefined' && FLASH_MESSAGES.length > 0) {
-    showFlashMessages(FLASH_MESSAGES);
-}
+
+/**
+ * Bagian ini berjalan otomatis saat halaman dimuat.
+ * Ia memeriksa pesan 'flash' dari Flask dan menampilkannya menggunakan fungsi showAlert di atas.
+ */
+document.addEventListener('DOMContentLoaded', () => {
+    if (typeof FLASH_MESSAGES !== 'undefined' && FLASH_MESSAGES.length > 0) {
+        FLASH_MESSAGES.forEach(msg => {
+            let category = msg[0];
+            if (category === 'danger') {
+                category = 'error';
+            }
+            showAlert(msg[1], category);
+        });
+    }
+});
