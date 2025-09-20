@@ -58,18 +58,18 @@ def validate_password(password):
     return errors
 
 # --- Rute-Rute Autentikasi ---
-
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        phone_number = request.form.get('phone')
+        login_identifier = request.form.get('login_identifier')
         password = request.form.get('password')
 
-        if not phone_number or not password:
-            flash('Nomor telepon dan password harus diisi.', 'danger')
+        if not login_identifier or not password:
+            flash('Email/No. Telepon dan password harus diisi.', 'danger')
             return render_template('auth/login.html')
 
-        user = query_db("SELECT id, password_hash, display_name FROM users WHERE phone_number = %s", (phone_number,), one=True)
+        query = "SELECT id, password_hash, display_name FROM users WHERE phone_number = %s OR email = %s"
+        user = query_db(query, (login_identifier, login_identifier), one=True)
         
         if user and check_password_hash(user['password_hash'], password):
             session['user_id'] = user['id']
@@ -78,7 +78,7 @@ def login():
             flash(f"Login berhasil! Selamat datang, {user['display_name']}.", 'success')
             return redirect(url_for('main.index'))
         else:
-            flash('Nomor telepon atau password salah.', 'danger')
+            flash('Email/No. Telepon atau password salah.', 'danger')
             return render_template('auth/login.html')
 
     return render_template('auth/login.html')

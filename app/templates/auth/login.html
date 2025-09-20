@@ -5,8 +5,8 @@
 {% block auth_content %}
     <form action="{{ url_for('auth.login') }}" method="POST">
         <div class="form-group">
-            <label for="phone">No. Telepon</label>
-            <input type="tel" id="phone" name="phone" placeholder="Contoh: 08123456789" required>
+            <label for="login_identifier">No. Telepon</label>
+            <input type="text" id="login_identifier" name="login_identifier" placeholder="Masukkan email atau no. telepon Anda" required>
         </div>
         <div class="form-group">
             <label for="password">Password</label>
